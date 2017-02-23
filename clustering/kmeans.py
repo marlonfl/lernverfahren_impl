@@ -38,24 +38,6 @@ def assign_to_center(centers, sample):
 
     return dists.index(min(dists))
 
-def predict():
-    pass
-
-def eval(labels, predictions):
-    pass
-
-def load_model():
-    pass
-
-def load_files(path):
-    pass
-
-def load_unsupervised(path):
-    pass
-
-def save_model():
-    pass
-
 def euclid(a,b):
     dist = 0
     for i, feat in enumerate(a):
@@ -65,16 +47,11 @@ def euclid(a,b):
 
 
 if __name__ == "__main__":
-    # k = sys.argv[1]
-    # iterations = sys.argv[2]
-    # X_train = load_unsupervised(sys.argv[3])
-    # X_test = load_unsupervised(sys.argv[4])
-
-
-    train_cl1 = np.array([np.array([random.uniform(0, 0.45), random.uniform(0, 0.6)]) for i in range(20)])
-    train_cl2  = np.array([np.array([random.uniform(0.55, 1), random.uniform(0.4, 1)]) for i in range(20)])
+    train_cl1 = np.array([np.array([random.uniform(0, 0.55), random.uniform(0, 0.6)]) for i in range(200)])
+    train_cl2  = np.array([np.array([random.uniform(0.45, 1), random.uniform(0.4, 1)]) for i in range(200)])
     train_data = np.concatenate((train_cl1, train_cl2), axis=0)
-    centers = train(train_data, 2, 10)
+    centers = train(train_data, 2, 20)
+
     for c in centers:
         print (c.coordinates)
 
