@@ -8,7 +8,7 @@ def load_mnist():
         sys.exit("MNIST data not downloaded. Put it in the mnist-folder. \n"
             + "https://pypi.python.org/pypi/python-mnist/ <-- Tutorial")
 
-    print ("Loading MNIST data...")
+    print ("Loading MNIST data...", end="", flush=True)
     mnist_data = MNIST("../../mnist")
     train_imgs, train_labels = mnist_data.load_training()
     test_imgs, test_labels = mnist_data.load_testing()
