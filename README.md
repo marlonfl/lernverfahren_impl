@@ -5,11 +5,11 @@ Simply for my personal understanding
 
 **Implemented so far:**
 - k-Means (Clustering)
+- k-Nearest-Neighbors (Classification)
 
 **To be implemented:**
 - Gaussian Mixture Models Clustering
 - DBSCAN (Clustering)
-- k-Nearest-Neighbors (Classification)
 - Naive Bayes (Classification)
 - Logistic Regression (Classification)
 - Linear Regression using Gradient Descent (Regression)
