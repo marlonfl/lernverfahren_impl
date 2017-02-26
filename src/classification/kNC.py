@@ -7,24 +7,47 @@ import quickselect as q
 from scipy.spatial.distance import euclidean
 
 class kNN(object):
+    set_size = 40
     def __init__(self, k, X_train, Y_train):
         self.k = k
         self.X_train = X_train
         self.Y_train = Y_train
 
+        classes = {}
+
+
+        for clazz in set(Y_train):
+            assigned_samples = X_train[[x for x, label in enumerate(Y_train) if label == clazz]]
+            classes[clazz] = np.mean(assigned_samples, axis=0)
+
+        self.centroids = classes
+
     def predict(self, X_test):
         predictions = []
+        knc = 0
+        knn = 0
         for sample in X_test:
-            distances = [euclidean(x, sample) for x in self.X_train]
-            # indices = np.array(distances).argsort()[:self.k]
-            # labels = [Y_train[index] for index in indices]
-            tmp_dst = distances[:]
-            k_smallest = q.select(tmp_dst, 0, len(tmp_dst) -1, self.k)
-            labels = [self.Y_train[i] for i, dist in enumerate(distances)
-                                                        if dist < k_smallest]
-            predictions.append(max(set(labels), key=labels.count))
+            distances = {clazz: euclidean(sample, centroid) for clazz, centroid in self.centroids.items()}
+            vals = list(distances.values())
+            v = np.array(vals).argsort()
+            if distances[v[1]] - distances[v[0]] < distances[v[0]]/30:
+                predictions.append(self.pred_knn(sample))
+                knn += 1
+            else:
+                predictions.append(min(distances, key=distances.get))
+                knc += 1
 
+        print ("\n Centroids: " + str(knc))
+        print ("Neighbors: " + str(knn))
         return predictions
+
+    def pred_knn(self, sample):
+        distances = [euclidean(x, sample) for x in self.X_train]
+        tmp_dst = distances[:]
+        k_smallest = q.select(tmp_dst, 0, len(tmp_dst) -1, self.k)
+        labels = [self.Y_train[i] for i, dist in enumerate(distances)
+                                                        if dist < k_smallest]
+        return max(set(labels), key=labels.count)
 
 # returns accuracy
 def eval(preds, labels):
