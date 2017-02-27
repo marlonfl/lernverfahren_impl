@@ -4,6 +4,7 @@ Rudimentary implementations of algorithms presented in an ML class I take
 **Implemented so far:**
 - k-Means (Clustering)
 - k-Nearest-Neighbors (Classification)
+- Centroid-kNN-Mix (Classification)
 - Linear Regression using Gradient Descent (Regression)
 
 **To be implemented:**
