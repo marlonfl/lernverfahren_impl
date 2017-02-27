@@ -3,22 +3,56 @@ import numpy as np
 import sys
 sys.path.append("../util/")
 from make_sets import make_train_test
+import math
 
 class Naive_Bayes(object):
-
-    means = []
-    st_devs = []
+    class_gaussians = {}
+    class_priori = {}
 
     def __init__(self, X, Y):
         self.X = X
         self.Y = Y
-        train()
+        self.train()
 
     def train(self):
-        pass
+        n_samples = {}
+        for clazz in set(self.Y):
+            cl_samples = self.X[[i for i, label in enumerate(self.Y)
+                                                if label == clazz]]
+            n_samples[clazz] = len(cl_samples)
 
-    def predict(self):
-        pass
+            means = np.mean(cl_samples, axis=0)
+            st_devs = np.std(cl_samples, axis=0)
+            self.class_gaussians[clazz] = zip(means, st_devs)
+
+        for clazz in n_samples.keys():
+            self.class_priori[clazz] = n_samples[clazz] / sum(n_samples.values())
+
+
+    def predict(self, X_test):
+        predictions = []
+        for sample in X_test:
+            probs = {}
+            for clazz in self.class_gaussians.keys():
+                pdf_params = self.class_gaussians[clazz]
+
+                feat_probs = []
+                for i, params in enumerate(pdf_params):
+                    mean = params[0]
+                    st_dev = params[1]
+                    print (mean)
+                    print (st_dev)
+                    exponent = math.exp(-(math.pow(sample[i]-mean,2)/
+                                           (2*math.pow(st_dev,2))))
+                    feat_probs.append((1 /
+                        (math.sqrt(2*math.pi) * st_dev)) * exponent)
+
+                probs[clazz] = np.prod(feat_probs) * self.class_priori[clazz]
+
+            print (probs)
+            predictions.append(max(probs, key=probs.get))
+
+        return predictions
 
 def load_data(fn):
     data = np.array((list(csv.reader(open(fn, 'r')))))
@@ -53,3 +87,6 @@ if __name__ == "__main__":
                         "../../diabetes/pima-indians-diabetes.csv")
 
     nb = Naive_Bayes(X_train, Y_train)
+    predictions = nb.predict(X_test)
+
+    print ("Accuracy: " + str(eval(predictions, Y_test)))
