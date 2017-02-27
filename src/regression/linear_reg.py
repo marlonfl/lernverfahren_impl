@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Point(object):
 
@@ -13,7 +14,7 @@ def calc_sse(w, samples):
 
     return (0.5*error) / len(points)
 
-
+# batch gradient descent
 def update(w_old, samples, alpha):
     print ("w: " + str(w_old[1:]))
     print ("b: " + str(w_old[0]))
@@ -29,16 +30,16 @@ def update(w_old, samples, alpha):
 
 
 if __name__ == "__main__":
-    learning_rate = 0.01
+    learning_rate = 0.003
     points = []
-    points.append(Point([1,1], 5))
-    points.append(Point([2,2], 9))
-    points.append(Point([3,3], 13))
-    points.append(Point([4,4], 17))
-    points.append(Point([5,5], 21))
-    points.append(Point([6,6], 25))
+    points.append(Point([1], 5))
+    points.append(Point([2], 9))
+    points.append(Point([3], 13))
+    points.append(Point([4], 17))
+    points.append(Point([5], 21))
+    points.append(Point([6], 25))
 
-    w = [1.3, 2.9]
+    w = [1.3]
     b = 0.3
 
     #preprocessing
@@ -49,6 +50,25 @@ if __name__ == "__main__":
 
     #print (calc_sse(w, points))
 
-    #
-    for i in range(100):
+    m = w[1]
+    b = w[0]
+    asdf = []
+    for x in range(0, points[-1].x[1] + 1):
+        asdf.append(m*x + b)
+    plt.plot(asdf)
+
+    for i in range(20):
         w = update(w,points,learning_rate)
+        m = w[1]
+        b = w[0]
+        asdf = []
+        for x in range(0, points[-1].x[1] + 1):
+            asdf.append(m*x + b)
+        plt.plot(asdf)
+
+    p = []
+    for point in points:
+        p.append([point.x[1], point.y])
+
+    plt.scatter(*zip(*p),color='red')
+    plt.show()
