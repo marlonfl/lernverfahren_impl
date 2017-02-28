@@ -23,11 +23,10 @@ class Naive_Bayes(object):
 
             means = np.mean(cl_samples, axis=0)
             st_devs = np.std(cl_samples, axis=0)
-            self.class_gaussians[clazz] = zip(means, st_devs)
+            self.class_gaussians[clazz] = zipp(means, st_devs)
 
         for clazz in n_samples.keys():
             self.class_priori[clazz] = n_samples[clazz] / sum(n_samples.values())
-
 
     def predict(self, X_test):
         predictions = []
@@ -35,21 +34,15 @@ class Naive_Bayes(object):
             probs = {}
             for clazz in self.class_gaussians.keys():
                 pdf_params = self.class_gaussians[clazz]
-
                 feat_probs = []
                 for i, params in enumerate(pdf_params):
                     mean = params[0]
                     st_dev = params[1]
-                    print (mean)
-                    print (st_dev)
-                    exponent = math.exp(-(math.pow(sample[i]-mean,2)/
-                                           (2*math.pow(st_dev,2))))
-                    feat_probs.append((1 /
-                        (math.sqrt(2*math.pi) * st_dev)) * exponent)
+                    exponent = math.exp(-(math.pow(sample[i]-mean,2)/(2*math.pow(st_dev,2))))
+                    feat_probs.append((1 / (math.sqrt(2*math.pi) * st_dev)) * exponent)
 
                 probs[clazz] = np.prod(feat_probs) * self.class_priori[clazz]
 
-            print (probs)
             predictions.append(max(probs, key=probs.get))
 
         return predictions
@@ -81,6 +74,12 @@ def eval(Y_pred, Y_test):
 
     return correct/len(X_test)
 
+def zipp(a,b):
+    result = []
+    for i in range(len(a)):
+        result.append((a[i], b[i]))
+
+    return np.array(result)
 
 if __name__ == "__main__":
     X_train, Y_train, X_test, Y_test = load_data(
